@@ -4,3 +4,11 @@
 [submodule "android-configure_PKGBUILD"]
 	path = android-configure_PKGBUILD
 	url = https://github.com/Denzy7/android-configure_PKGBUILD
+[submodule "cpython"]
+	path = cpython
+	url = https://github.com/python/cpython.git
+	branch = 3.13
+[submodule "openssl"]
+	path = openssl
+	url = https://github.com/openssl/openssl
+	branch = openssl-3.5
