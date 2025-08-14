@@ -1,9 +1,3 @@
-[submodule "android-environment"]
-	path = android-environment
-	url = https://aur.archlinux.org/android-environment.git
-[submodule "android-configure_PKGBUILD"]
-	path = android-configure_PKGBUILD
-	url = https://github.com/Denzy7/android-configure_PKGBUILD
 [submodule "cpython"]
 	path = cpython
 	url = https://github.com/python/cpython.git
