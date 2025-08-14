@@ -49,7 +49,7 @@ jobs:
 
       - name: submodules
         run: |
-          git submodule update --init
+          git submodule update --init --depth 1
 
       - name: build
         run: |
