@@ -1,14 +1,14 @@
-[submodule "android-environment"]
-	path = android-environment
-	url = https://aur.archlinux.org/android-environment.git
-[submodule "android-configure_PKGBUILD"]
-	path = android-configure_PKGBUILD
-	url = https://github.com/Denzy7/android-configure_PKGBUILD
-[submodule "openssl"]
-	path = openssl
-	url = https://github.com/openssl/openssl
-	branch = openssl-3.5
 [submodule "cpython"]
 	path = cpython
 	url = https://github.com/python/cpython.git
 	branch = 3.13
+[submodule "openssl"]
+	path = openssl
+	url = https://github.com/openssl/openssl
+	branch = openssl-3.5
+[submodule "android-configure_PKGBUILD"]
+	path = android-configure_PKGBUILD
+	url = https://github.com/Denzy7/android-configure_PKGBUILD
+[submodule "android-environment_PKGBUILD"]
+	path = android-environment_PKGBUILD
+	url = https://github.com/Denzy7/android-environment_PKGBUILD

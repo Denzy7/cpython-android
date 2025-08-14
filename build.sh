@@ -30,7 +30,7 @@ for _arch in ${_architectures}; do
     sed "s|@TRIPLE@|${_arch}|g" "$rootpath/android-configure_PKGBUILD/android-configure.sh" > android-${_arch}-configure
     chmod +x android-${_arch}-configure
 done
-ln -sf "$rootpath/android-environment/android-env.sh" android-env
+ln -sf "$rootpath/android-environment_PKGBUILD/android-env.sh" android-env
 
 export PATH="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-$(uname -m)/bin:$PWD:$PWD/host-python/usr/local/bin:$PATH"
 export LC_ALL=C
