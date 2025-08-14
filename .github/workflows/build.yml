@@ -57,11 +57,16 @@ jobs:
           cd build-${{ matrix.name }}
           ARCH=${{ matrix.arch }} CHOST=x86_64-pc-linux-gnu ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/27.3.13750724 ../build.sh
 
+      - name: ${{ matrix.name }} zip
+        run: |
+          cd build-${{ matrix.name }}/output/opt/android-libs
+          zip -r cpython_${{ matrix.name }}.zip ${{ matrix.arch }}
+
       - name: cpython ${{ matrix.name }}
         uses: actions/upload-artifact@v4
         with:
           name: cpython_${{ matrix.name }}
-          path: build-${{ matrix.name }}/output/opt/android-libs/${{ matrix.arch }}
+          path: build-${{ matrix.name }}/output/opt/android-libs/cpython_${{ matrix.name }}.zip
 
   release:
     needs: build
