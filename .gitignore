@@ -1,3 +1,4 @@
 android-*-configure
 build-*
 host*
+*.vim

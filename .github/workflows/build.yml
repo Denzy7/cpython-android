@@ -51,6 +51,21 @@ jobs:
         run: |
           git submodule update --init --depth 1
 
+      - name: Python Version
+        id: python-version
+        run: |
+          # for maximum compatibility we use our python
+          echo "pyver=$(git -C cpython describe --tags)" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: restore ${{ runner.os }} host python
+        id: cache-host-python-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build-host-python
+          key: ${{ runner.os }}-python-${{ steps.python-version.outputs.pyver }}
+
       - name: build
         run: |
           mkdir -p build-${{ matrix.name }}
@@ -67,6 +82,14 @@ jobs:
         with:
           name: cpython_${{ matrix.name }}
           path: build-${{ matrix.name }}/output/opt/android-libs/cpython_${{ matrix.name }}.zip
+
+      - name: save host python
+        if: ${{ runner.os }} == "Linux" #we're using all linux atm. not sure if there is problem in each matrix having it's own host python...
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            build-host-python
+        key: ${{ steps.cache-host-python-restore.outputs.cache-primary-key }}
 
   release:
     needs: build
