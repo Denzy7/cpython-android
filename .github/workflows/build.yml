@@ -85,7 +85,7 @@ jobs:
       - name: copy build openssl
         if: steps.cache-openssl-restore.outputs.cache-hit == 'true'
         run: |
-          mkdir -p ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs/${{ matrix.arch }}
+          mkdir -p ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs
           cp -r ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install/opt/android-libs/${{ matrix.arch }} ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs
 
       - name: build
