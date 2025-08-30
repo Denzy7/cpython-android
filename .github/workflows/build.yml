@@ -75,7 +75,7 @@ jobs:
           key: ${{ runner.os }}-python-${{ steps.depends-version.outputs.pyver }}
 
       - name: restore ${{ matrix.arch }} openssl
-        id: cache-${{ matrix.arch }}-openssl-restore
+        id: cache-openssl-restore
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -83,7 +83,7 @@ jobs:
           key: ${{ matrix.arch }}-openssl-${{ steps.depends-version.outputs.osslver }}
 
       - name: copy build openssl
-        if: steps.cache.outputs.cache-${{ matrix.arch }}-openssl-restore-hit == 'true'
+        if: steps.cache.outputs.cache-openssl-restore-hit == 'true'
         run: |
           mkdir -p ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs/${{ matrix.arch }}
           cp -r ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install/* ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs/${{ matrix.arch }}
@@ -122,7 +122,7 @@ jobs:
         with:
           path: |
             ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install
-          key: ${{ steps.cache-${{ matrix.arch }}-openssl-restore.outputs.cache-primary-key }}
+          key: ${{ steps.cache-openssl-restore.outputs.cache-primary-key }}
 
   release:
     needs: build
