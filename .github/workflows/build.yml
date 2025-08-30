@@ -38,9 +38,6 @@ jobs:
           #sudo apt -y upgrade
           sudo apt -y install build-essential 
 
-          # we actually need bash
-          sudo ln -sf /bin/bash /bin/sh
-
       - name: fix crlf
         run: git config --global core.autocrlf input
 
@@ -66,7 +63,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
-            build-host-python
+            host-python
           key: ${{ runner.os }}-python-${{ steps.python-version.outputs.pyver }}
 
       - name: build
@@ -86,12 +83,16 @@ jobs:
           name: cpython_${{ matrix.name }}
           path: build-${{ matrix.name }}/output/opt/android-libs/cpython_${{ matrix.name }}.zip
 
+      - name: ls
+        run: |
+          ls *
+
       - name: save host python
-        if: ${{ runner.os }} == "Linux" #we're using all linux atm. not sure if there is problem in each matrix having it's own host python...
+        if: ${{ matrix.name }} == "x86-64" #we're using all linux atm. not sure if there is problem in each matrix having it's own host python...
         uses: actions/cache/save@v4
         with:
           path: |
-            build-host-python
+            host-python
           key: ${{ steps.cache-host-python-restore.outputs.cache-primary-key }}
 
   release:
