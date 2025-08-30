@@ -92,5 +92,3 @@ for _arch in ${_architectures}; do
     make DESTDIR=../output install
     popd
 done
-
-

@@ -121,6 +121,17 @@ jobs:
             ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install
           key: ${{ steps.cache-openssl-restore.outputs.cache-primary-key }}
 
+      - name: ${{ matrix.name }} openssl zip
+        run: |
+          cd ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install/opt/android-libs
+          zip -r openssl_${{ matrix.name }}.zip ${{ matrix.arch }}
+
+      - name: openssl ${{ matrix.name }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: openssl_${{ matrix.name }}
+          path: ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install/opt/android-libs/openssl_${{ matrix.name }}.zip
+
   release:
     needs: build
     if: startsWith(github.ref, 'refs/tags/')
