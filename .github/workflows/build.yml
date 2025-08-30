@@ -110,7 +110,8 @@ jobs:
           ls *
 
       - name: save host python
-        if: matrix.name == "x86-64" #we're using all linux x86_64 atm. not sure if there is problem in each matrix having it's own host python or some crazy race condition coz that would reqyure multiple copies of python for each (i.e wasteful)
+      #we're using all linux x86_64 atm. not sure if there is problem in each matrix having it's own host python or some crazy race condition coz that would reqyure multiple copies of python for each (i.e wasteful)
+        if: matrix.name == "x86-64"
         uses: actions/cache/save@v4
         with:
           path: |
