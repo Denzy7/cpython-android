@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     strategy:
+      env:
+        CPYTHON_ANDROID_BUILDIR: ${{ env.CPYTHON_ANDROID_BUILDIR }}
       fail-fast: true
       matrix:
         include:
@@ -27,8 +29,7 @@ jobs:
             arch: "aarch64"
             os: ubuntu-22.04
     runs-on: ${{ matrix.os }}
-    env:
-      CPYTHON_ANDROID_BUILDIR: ${{ env.CPYTHON_ANDROID_BUILDIR }}
+
     defaults:
       run:
         shell: bash {0}
