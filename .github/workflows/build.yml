@@ -83,10 +83,10 @@ jobs:
           key: ${{ matrix.arch }}-openssl-${{ steps.depends-version.outputs.osslver }}
 
       - name: copy build openssl
-        if: steps.cache.outputs.cache-openssl-restore-hit == 'true'
+        if: steps.cache.outputs.cache-openssl-restore.cache-hit == 'true'
         run: |
           mkdir -p ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs/${{ matrix.arch }}
-          cp -r ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install/* ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs/${{ matrix.arch }}
+          cp -r ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install/opt/android-libs/${{ matrix.arch }} ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs
 
       - name: build
         run: |
@@ -107,7 +107,7 @@ jobs:
 
       - name: ls
         run: |
-          ls *
+          ls -lah **
 
       - name: save host python
       #we're using all linux x86_64 atm. not sure if there is problem in each matrix having it's own host python or some crazy race condition coz that would reqyure multiple copies of python for each (i.e wasteful)
