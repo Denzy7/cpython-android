@@ -49,12 +49,14 @@ jobs:
 
       - name: submodules
         run: |
-          git submodule update --init --depth 1 openssl
-          git submodule update --init cpython
+          git submodule update --init --depth 1
+          #this has to be changed with every submodule update
+          git -C cpython fetch --deepen 35
 
       - name: Python Version
         id: python-version
         run: |
+          set -e
           # for maximum compatibility we use our python
           echo "pyver=$(git -C cpython describe --tags)" >> $GITHUB_OUTPUT
         shell: bash
