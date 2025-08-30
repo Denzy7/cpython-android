@@ -38,6 +38,9 @@ jobs:
           #sudo apt -y upgrade
           sudo apt -y install build-essential 
 
+          # we actually need bash
+          sudo ln -sf /bin/bash /bin/sh
+
       - name: fix crlf
         run: git config --global core.autocrlf input
 
