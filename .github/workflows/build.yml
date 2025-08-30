@@ -88,6 +88,11 @@ jobs:
           mkdir -p ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs
           cp -r ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install/opt/android-libs/${{ matrix.arch }} ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs
 
+      - name: find_2
+        run: |
+          find
+
+
       - name: build
         run: |
           mkdir -p ${{ env.CPYTHON_ANDROID_BUILDIR }}
