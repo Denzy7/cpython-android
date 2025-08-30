@@ -71,7 +71,7 @@ for _arch in ${_architectures}; do
 
     source android-env $_arch
 
-    if [[ -f "../output/$ANDROID_EXTERNAL_LIBS/$_arch/lib/libssl.so" ]]; then
+    if [[ -f "../output/$ANDROID_EXTERNAL_LIBS/$_arch/lib/libssl.so" ]];
         echo "use pre-built openssl"
     elif
         mkdir -p build-ossl-$_arch
