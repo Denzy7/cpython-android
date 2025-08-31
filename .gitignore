@@ -1,3 +1,5 @@
 android-*-configure
 build-*
 host*
+*.vim
+openssl-install

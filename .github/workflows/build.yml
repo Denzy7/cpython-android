@@ -27,6 +27,8 @@ jobs:
             arch: "aarch64"
             os: ubuntu-22.04
     runs-on: ${{ matrix.os }}
+    env:
+      CPYTHON_ANDROID_BUILDIR: build-cpython-android
     defaults:
       run:
         shell: bash {0}
@@ -51,22 +53,84 @@ jobs:
         run: |
           git submodule update --init --depth 1
 
+          # this has to be changed with every submodule update. we could use a file or sth
+          # expr $(git -C <repo> describe --tags --long | cut -d- -f2) + 1
+          git -C cpython fetch --deepen 35
+          git -C openssl fetch --deepen 19
+
+      - name: depends version
+        id: depends-version
+        run: |
+          # for maximum compatibility we use our python and ossl
+          echo "pyver=$(git -C cpython describe --tags)" >> $GITHUB_OUTPUT
+          echo "osslver=$(git -C openssl describe --tags)" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: restore ${{ runner.os }} host python
+        id: cache-host-python-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ${{ env.CPYTHON_ANDROID_BUILDIR }}/host-python
+          key: ${{ runner.os }}-python-${{ steps.depends-version.outputs.pyver }}
+
+      - name: restore ${{ matrix.arch }} openssl
+        id: cache-openssl-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install
+          key: ${{ matrix.arch }}-openssl-${{ steps.depends-version.outputs.osslver }}
+
+      - name: copy build openssl
+        if: steps.cache-openssl-restore.outputs.cache-hit == 'true'
+        run: |
+          mkdir -p ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs
+          cp -r ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install/opt/android-libs/${{ matrix.arch }} ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs
+
       - name: build
         run: |
-          mkdir -p build-${{ matrix.name }}
-          cd build-${{ matrix.name }}
+          mkdir -p ${{ env.CPYTHON_ANDROID_BUILDIR }}
+          cd ${{ env.CPYTHON_ANDROID_BUILDIR }}
           ARCH=${{ matrix.arch }} CHOST=x86_64-pc-linux-gnu ANDROID_NDK_ROOT=/usr/local/lib/android/sdk/ndk/27.3.13750724 ../build.sh
 
       - name: ${{ matrix.name }} zip
         run: |
-          cd build-${{ matrix.name }}/output/opt/android-libs
+          cd ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs
           zip -r cpython_${{ matrix.name }}.zip ${{ matrix.arch }}
 
       - name: cpython ${{ matrix.name }}
         uses: actions/upload-artifact@v4
         with:
           name: cpython_${{ matrix.name }}
-          path: build-${{ matrix.name }}/output/opt/android-libs/cpython_${{ matrix.name }}.zip
+          path: ${{ env.CPYTHON_ANDROID_BUILDIR }}/output/opt/android-libs/cpython_${{ matrix.name }}.zip
+
+      - name: save host python
+      #we're using all linux x86_64 atm. not sure if there is problem in each matrix having it's own host python or some crazy race condition coz that would reqyure multiple copies of python for each (i.e wasteful)
+        uses: actions/cache/save@v4
+        if: matrix.name == 'x86-64'
+        with:
+          path: |
+            ${{ env.CPYTHON_ANDROID_BUILDIR }}/host-python
+          key: ${{ steps.cache-host-python-restore.outputs.cache-primary-key }}
+
+      - name: save ${{ matrix.arch }} openssl
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install
+          key: ${{ steps.cache-openssl-restore.outputs.cache-primary-key }}
+
+      - name: ${{ matrix.name }} openssl zip
+        run: |
+          cd ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install/opt/android-libs
+          zip -r openssl_${{ matrix.name }}.zip ${{ matrix.arch }}
+
+      - name: openssl ${{ matrix.name }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: openssl_${{ matrix.name }}
+          path: ${{ env.CPYTHON_ANDROID_BUILDIR }}/openssl-install/opt/android-libs/openssl_${{ matrix.name }}.zip
 
   release:
     needs: build

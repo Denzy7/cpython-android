@@ -1,4 +1,4 @@
-#/bin/sh
+#/bin/bash
 
 set -e
 
@@ -71,13 +71,18 @@ for _arch in ${_architectures}; do
 
     source android-env $_arch
 
-    mkdir -p build-ossl-$_arch
-    pushd build-ossl-$_arch
-    echo "build openssl for $_arch"
-    "$rootpath/openssl/Configure" --prefix="${ANDROID_PREFIX}" android-$osslArch -D__ANDROID_API__=$ANDROID_MINIMUM_PLATFORM no-docs no-tests
-    make -j$(nproc)
-    make DESTDIR=../output install
-    popd
+    if [[ -f "output/$ANDROID_EXTERNAL_LIBS/$_arch/lib/libssl.so" ]]; then
+        echo "use pre-built openssl"
+    else
+        mkdir -p build-ossl-$_arch
+        pushd build-ossl-$_arch
+        echo "build openssl for $_arch"
+        "$rootpath/openssl/Configure" --prefix="${ANDROID_PREFIX}" android-$osslArch -D__ANDROID_API__=$ANDROID_MINIMUM_PLATFORM no-docs no-tests
+        make -j$(nproc)
+        make DESTDIR=../output install
+        make DESTDIR=../openssl-install install
+        popd
+    fi
 
     echo "Build python$PYTHON_VERSION for $_arch"
     mkdir -p build-$_arch-python
@@ -87,5 +92,3 @@ for _arch in ${_architectures}; do
     make DESTDIR=../output install
     popd
 done
-
-
