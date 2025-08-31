@@ -51,12 +51,12 @@ jobs:
 
       - name: submodules
         run: |
-          git submodule update --init --depth 1
+          git submodule update --init
 
-          # this has to be changed with every submodule update. we could use a file or sth
+          # this would have to be changed with every submodule update. we could use a file or sth
           # expr $(git -C <repo> describe --tags --long | cut -d- -f2) + 1
-          git -C cpython fetch --deepen 35
-          git -C openssl fetch --deepen 19
+          #git -C cpython fetch --deepen 57
+          #git -C openssl fetch --deepen 19
 
       - name: depends version
         id: depends-version
